@@ -22,8 +22,6 @@ abstract contract Base_Test is Test, Deploys, Assertions, Defaults, Utils {
 
         // Deploy PAR token contract.
         par = _deployERC20Mock("PAR", "PAR", 18);
-        // Deploy paUSD token contract.
-        paUSD = _deployERC20Mock("paUSD", "paUSD", 18);
         // Deploy PRL token contract.
         prl = _deployERC20Mock("prl", "PRL", 18);
         // Deploy BPT token contract.
@@ -62,7 +60,6 @@ abstract contract Base_Test is Test, Deploys, Assertions, Defaults, Utils {
         vm.deal({ account: user.addr, newBalance: INITIAL_BALANCE });
         if (setTokenBalance) {
             par.mint(user.addr, INITIAL_BALANCE);
-            paUSD.mint(user.addr, INITIAL_BALANCE);
             prl.mint(user.addr, INITIAL_BALANCE);
             weth.mint(user.addr, INITIAL_BALANCE);
         }
