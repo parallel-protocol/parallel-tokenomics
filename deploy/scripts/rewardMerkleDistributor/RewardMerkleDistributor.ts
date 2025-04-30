@@ -2,7 +2,7 @@ import assert from "assert";
 
 import { type DeployFunction } from "hardhat-deploy/types";
 
-import { checkAddressValid, GAS, getTokenAddressFromConfig, getWalletAddressFromConfig } from "../../utils";
+import { checkAddressValid, getTokenAddressFromConfig, getWalletAddressFromConfig } from "../../utils";
 import { readFileSync } from "fs";
 import { ConfigData } from "../../utils/types";
 
@@ -37,7 +37,6 @@ const deploy: DeployFunction = async (hre) => {
     args: [accessManager, token, expiredRewardsRecipient],
     log: true,
     skipIfAlreadyDeployed: false,
-    ...GAS,
   });
 
   console.log(`Deployed contract: ${contractName}, network: ${hre.network.name}, address: ${contract.address}`);

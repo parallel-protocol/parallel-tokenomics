@@ -1,9 +1,8 @@
 import assert from "assert";
 
-import { ethers } from "ethers";
 import { type DeployFunction } from "hardhat-deploy/types";
 
-import { GAS, getTokenAddressFromConfig, getWalletAddressFromConfig, isAddressValid } from "../../utils";
+import { getTokenAddressFromConfig, getWalletAddressFromConfig, isAddressValid } from "../../utils";
 import { readFileSync } from "fs";
 import { ConfigData } from "../../utils/types";
 
@@ -33,7 +32,6 @@ const deploy: DeployFunction = async (hre) => {
     args: [underlying, feeReceiver, accessManager, sprl1Data.startPenaltyPercentage, sprl1Data.timeLockDuration],
     log: true,
     skipIfAlreadyDeployed: false,
-    ...GAS,
   });
 
   console.log(`Deployed contract: ${contractName}, network: ${hre.network.name}, address: ${contract.address}`);
