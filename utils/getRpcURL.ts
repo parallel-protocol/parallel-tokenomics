@@ -20,6 +20,12 @@ export const getRpcURL = (network: string): string => {
     case "fantom": {
       return `https://fantom-mainnet.g.alchemy.com/v2/${apiKey}`;
     }
+    case "base": {
+      return `https://base-mainnet.g.alchemy.com/v2/${apiKey}`;
+    }
+    case "sonic": {
+      return `https://sonic-mainnet.g.alchemy.com/v2/${apiKey}`;
+    }
     default: {
       throw new Error(`${network} Network RPC not configured`);
     }

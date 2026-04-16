@@ -10,7 +10,6 @@ export type ConfigData = {
   };
   tokens: {
     prl: Address;
-    paUSD: Address;
     par: Address;
     weth: Address;
   };
@@ -31,13 +30,15 @@ export type ConfigData = {
     timeLockDuration: number;
   };
   sprl2: {
+    permit2: Address;
     feeReceiver: string;
     startPenaltyPercentage: BigNumberish;
     timeLockDuration: number;
-    balancerV3Vault: Address;
-    auraVault: Address;
+    balancerV3Router: Address;
+    auraRewardsPool: Address;
     auraBoosterLite: Address;
     auraBPT: Address;
     balancerBPT: Address;
+    rewardsTokens: Address[];
   };
 };

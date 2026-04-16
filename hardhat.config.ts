@@ -59,6 +59,16 @@ const config: HardhatUserConfig = {
       url: getRpcURL("polygon"),
       verify: getVerifyConfig("polygon"),
     },
+    base: {
+      url: getRpcURL("base"),
+      verify: getVerifyConfig("base"),
+      accounts,
+    },
+    sonic: {
+      url: getRpcURL("sonic"),
+      verify: getVerifyConfig("sonic"),
+      accounts,
+    },
   },
   namedAccounts: {
     deployer: {

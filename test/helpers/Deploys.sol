@@ -40,7 +40,6 @@ abstract contract Deploys is Test {
 
     ERC20Mock internal par;
     ERC20Mock internal prl;
-    ERC20Mock internal paUSD;
 
     ERC20Mock internal bpt;
     ERC20Mock internal auraBpt;

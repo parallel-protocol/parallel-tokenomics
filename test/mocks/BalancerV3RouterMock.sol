@@ -11,9 +11,11 @@ contract BalancerV3RouterMock is IBalancerV3Router {
     ERC20Mock public bpt;
     IPermit2 public permit2;
     uint256 ratio = 1e18;
+    bool isReversedBalancerPair;
 
     constructor(address[2] memory _tokens, address _bpt, address _permit2) {
         tokens = _tokens;
+        isReversedBalancerPair = _tokens[0] > _tokens[1];
         bpt = ERC20Mock(_bpt);
         permit2 = IPermit2(_permit2);
     }
@@ -36,8 +38,12 @@ contract BalancerV3RouterMock is IBalancerV3Router {
     {
         uint256 amountIn0 = (maxAmountsIn[0] * ratio) / 1e18;
         uint256 amountIn1 = (maxAmountsIn[1] * ratio) / 1e18;
-        permit2.transferFrom(msg.sender, address(this), uint160(amountIn0), tokens[0]);
-        permit2.transferFrom(msg.sender, address(this), uint160(amountIn1), tokens[1]);
+        permit2.transferFrom(
+            msg.sender, address(this), uint160(amountIn0), isReversedBalancerPair ? tokens[1] : tokens[0]
+        );
+        permit2.transferFrom(
+            msg.sender, address(this), uint160(amountIn1), isReversedBalancerPair ? tokens[0] : tokens[1]
+        );
         bpt.mint(msg.sender, exactBptAmountOut);
         amountsIn = new uint256[](2);
         amountsIn[0] = amountIn0;

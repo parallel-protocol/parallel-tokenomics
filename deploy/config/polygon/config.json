@@ -1,38 +1,40 @@
 {
   "isMainChainFeeDistributor": true,
-  "accessManager": "0xfD28f108e95f4D41daAE9dbfFf707D677985998E",
+  "accessManager": "0x7Df74BBB6F82eC1BCB1562a30ef5Bf5c326e2811",
   "wallets": {
-    "dao": "0x66CcEC236bbcE5f1bBd1b2fC0a4014e57A55ad02"
+    "dao": "0x2046c0416A558C40cb112E5ebB0Ca764c3C5c32a"
   },
   "tokens": {
-    "prl": "0xfaD382eE9B8229fb9B05DF9F9391baC5DD81f346",
-    "par": "0x68E88c802F146eAD2f99F3A91Fb880D1A2509672",
-    "weth": "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9"
+    "prl": "0x7790dd69aa10eD3f1271E41CD7222D2a7d2D5948",
+    "par": "0xE2Aa7db6dA1dAE97C5f5C6914d285fBfCC32A128",
+    "weth": "0x0000000000000000000000000000000000000000"
   },
   "rewardMerkleDistributor": {
     "token": "par",
     "expiredRewardsRecipient": "dao"
   },
   "feeDistributor": {
-    "mainChain": "sepolia",
+    "mainChain": "polygon",
     "destinationReceiver": "0x0000000000000000000000000000000000000000",
     "feeToken": "par",
-    "bridgeableToken": "0x9912c16Db85d6075DF6f0725A08B95f63a11A172"
+    "bridgeableToken": "0xE462Df8d4Aa7Db3aeCfe810ec8D1fa4f716BC9a8"
   },
   "sprl1": {
     "underlying": "prl",
     "feeReceiver": "dao",
-    "startPenaltyPercentage": "1000000000000000000",
+    "startPenaltyPercentage": "500000000000000000",
     "timeLockDuration": 2419200
   },
   "sprl2": {
     "feeReceiver": "dao",
-    "startPenaltyPercentage": "1000000000000000000",
+    "permit2": "0x0000000000000000000000000000000000000000",
+    "startPenaltyPercentage": "500000000000000000",
     "timeLockDuration": 2419200,
     "balancerV3Router": "0x0000000000000000000000000000000000000000",
     "auraRewardsPool": "0x0000000000000000000000000000000000000000",
     "auraBoosterLite": "0x0000000000000000000000000000000000000000",
     "auraBPT": "0x0000000000000000000000000000000000000000",
-    "balancerBPT": "0x0000000000000000000000000000000000000000"
+    "balancerBPT": "0x0000000000000000000000000000000000000000",
+    "rewardsTokens": []
   }
 }

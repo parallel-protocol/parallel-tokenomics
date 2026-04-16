@@ -1,38 +1,40 @@
 {
-  "isMainChainFeeDistributor": true,
-  "accessManager": "0xfD28f108e95f4D41daAE9dbfFf707D677985998E",
+  "isMainChainFeeDistributor": false,
+  "accessManager": "0x0e4e7Ca9D7b1e6293D0713EFEfB4BCA010DeBF46",
   "wallets": {
-    "dao": "0x66CcEC236bbcE5f1bBd1b2fC0a4014e57A55ad02"
+    "dao": "0xC5201FFE258a95Af986E7cD1fcaD54f3f63f2C95"
   },
   "tokens": {
-    "prl": "0xfaD382eE9B8229fb9B05DF9F9391baC5DD81f346",
-    "par": "0x68E88c802F146eAD2f99F3A91Fb880D1A2509672",
-    "weth": "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9"
+    "prl": "0xfD28f108e95f4D41daAE9dbfFf707D677985998E",
+    "par": "0x0000000000000000000000000000000000000000",
+    "weth": "0x0000000000000000000000000000000000000000"
   },
   "rewardMerkleDistributor": {
     "token": "par",
     "expiredRewardsRecipient": "dao"
   },
   "feeDistributor": {
-    "mainChain": "sepolia",
+    "mainChain": "polygon",
     "destinationReceiver": "0x0000000000000000000000000000000000000000",
     "feeToken": "par",
-    "bridgeableToken": "0x9912c16Db85d6075DF6f0725A08B95f63a11A172"
+    "bridgeableToken": "0x0000000000000000000000000000000000000000"
   },
   "sprl1": {
     "underlying": "prl",
     "feeReceiver": "dao",
-    "startPenaltyPercentage": "1000000000000000000",
+    "startPenaltyPercentage": "500000000000000000",
     "timeLockDuration": 2419200
   },
   "sprl2": {
     "feeReceiver": "dao",
-    "startPenaltyPercentage": "1000000000000000000",
+    "permit2": "0x0000000000000000000000000000000000000000",
+    "startPenaltyPercentage": "500000000000000000",
     "timeLockDuration": 2419200,
     "balancerV3Router": "0x0000000000000000000000000000000000000000",
     "auraRewardsPool": "0x0000000000000000000000000000000000000000",
     "auraBoosterLite": "0x0000000000000000000000000000000000000000",
     "auraBPT": "0x0000000000000000000000000000000000000000",
-    "balancerBPT": "0x0000000000000000000000000000000000000000"
+    "balancerBPT": "0x0000000000000000000000000000000000000000",
+    "rewardsTokens": []
   }
 }
