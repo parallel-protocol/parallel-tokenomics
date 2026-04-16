@@ -51,6 +51,7 @@ contract RewardMerkleDistributor_Claim_Integrations_Test is Integrations_Test {
             startTime: uint64(block.timestamp) + firstEpochStartDelay,
             expiryTime: uint64(block.timestamp) + firstEpochStartDelay + epochLength * 6
         });
+
         rewardMerkleDistributor.updateMerkleDrop(firstEpochId, firstEpochMerkleDrop);
 
         /// @dev Leaves are added in the order of the merkle tree's secondEpochLeaves.
@@ -94,10 +95,7 @@ contract RewardMerkleDistributor_Claim_Integrations_Test is Integrations_Test {
 
         RewardMerkleDistributor.ClaimCallData[] memory claimsData = new RewardMerkleDistributor.ClaimCallData[](1);
         claimsData[0] = RewardMerkleDistributor.ClaimCallData({
-            epochId: firstEpochId,
-            account: users.alice.addr,
-            amount: firstClaimRewardsAmount,
-            merkleProof: proof
+            epochId: firstEpochId, account: users.alice.addr, amount: firstClaimRewardsAmount, merkleProof: proof
         });
 
         rewardMerkleDistributor.claims(claimsData);
@@ -147,10 +145,7 @@ contract RewardMerkleDistributor_Claim_Integrations_Test is Integrations_Test {
 
         RewardMerkleDistributor.ClaimCallData[] memory claimsData = new RewardMerkleDistributor.ClaimCallData[](1);
         claimsData[0] = RewardMerkleDistributor.ClaimCallData({
-            epochId: firstEpochId,
-            account: users.alice.addr,
-            amount: firstClaimRewardsAmount,
-            merkleProof: proof
+            epochId: firstEpochId, account: users.alice.addr, amount: firstClaimRewardsAmount, merkleProof: proof
         });
         vm.warp(firstEpochMerkleDrop.expiryTime + 1);
         vm.expectRevert(RewardMerkleDistributor.EpochExpired.selector);
@@ -163,10 +158,7 @@ contract RewardMerkleDistributor_Claim_Integrations_Test is Integrations_Test {
 
         RewardMerkleDistributor.ClaimCallData[] memory claimsData = new RewardMerkleDistributor.ClaimCallData[](1);
         claimsData[0] = RewardMerkleDistributor.ClaimCallData({
-            epochId: secondEpochId,
-            account: users.alice.addr,
-            amount: secondClaimRewardsAmount,
-            merkleProof: proof
+            epochId: secondEpochId, account: users.alice.addr, amount: secondClaimRewardsAmount, merkleProof: proof
         });
         vm.expectRevert(RewardMerkleDistributor.NotStarted.selector);
         rewardMerkleDistributor.claims(claimsData);
@@ -179,10 +171,7 @@ contract RewardMerkleDistributor_Claim_Integrations_Test is Integrations_Test {
 
         RewardMerkleDistributor.ClaimCallData[] memory claimsData = new RewardMerkleDistributor.ClaimCallData[](1);
         claimsData[0] = RewardMerkleDistributor.ClaimCallData({
-            epochId: firstEpochId,
-            account: users.alice.addr,
-            amount: firstClaimRewardsAmount,
-            merkleProof: proof
+            epochId: firstEpochId, account: users.alice.addr, amount: firstClaimRewardsAmount, merkleProof: proof
         });
 
         rewardMerkleDistributor.claims(claimsData);
@@ -198,10 +187,7 @@ contract RewardMerkleDistributor_Claim_Integrations_Test is Integrations_Test {
 
         RewardMerkleDistributor.ClaimCallData[] memory claimsData = new RewardMerkleDistributor.ClaimCallData[](1);
         claimsData[0] = RewardMerkleDistributor.ClaimCallData({
-            epochId: firstEpochId,
-            account: users.alice.addr,
-            amount: firstClaimRewardsAmount * 100,
-            merkleProof: proof
+            epochId: firstEpochId, account: users.alice.addr, amount: firstClaimRewardsAmount * 100, merkleProof: proof
         });
 
         vm.expectRevert(RewardMerkleDistributor.ProofInvalid.selector);
@@ -232,10 +218,7 @@ contract RewardMerkleDistributor_Claim_Integrations_Test is Integrations_Test {
 
         RewardMerkleDistributor.ClaimCallData[] memory claimsData = new RewardMerkleDistributor.ClaimCallData[](1);
         claimsData[0] = RewardMerkleDistributor.ClaimCallData({
-            epochId: firstEpochId,
-            account: users.alice.addr,
-            amount: firstClaimRewardsAmount,
-            merkleProof: proof
+            epochId: firstEpochId, account: users.alice.addr, amount: firstClaimRewardsAmount, merkleProof: proof
         });
 
         vm.expectRevert(RewardMerkleDistributor.TotalEpochRewardsExceeded.selector);

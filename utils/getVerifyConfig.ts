@@ -61,6 +61,24 @@ export const getVerifyConfig = (network: string): VerifyConfig => {
         },
       };
     }
+    case "base": {
+      if (!process.env.BASE_ETHERSCAN_API_KEY) throw new Error("BASE_ETHERSCAN_API_KEY is not set");
+      return {
+        etherscan: {
+          apiUrl: "https://api.basescan.org",
+          apiKey: process.env.BASE_ETHERSCAN_API_KEY,
+        },
+      };
+    }
+    case "sonic": {
+      if (!process.env.SONIC_ETHERSCAN_API_KEY) throw new Error("SONIC_ETHERSCAN_API_KEY is not set");
+      return {
+        etherscan: {
+          apiUrl: "https://api.sonicscan.org",
+          apiKey: process.env.SONIC_ETHERSCAN_API_KEY,
+        },
+      };
+    }
     default: {
       throw new Error(`${network} Network Verify not configured`);
     }

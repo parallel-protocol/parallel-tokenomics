@@ -32,13 +32,7 @@ contract sPRL1 is TimeLockPenaltyERC20 {
         uint64 _timeLockDuration
     )
         TimeLockPenaltyERC20(
-            NAME,
-            SYMBOL,
-            _underlying,
-            _feeReceiver,
-            _accessManager,
-            _startPenaltyPercentage,
-            _timeLockDuration
+            NAME, SYMBOL, _underlying, _feeReceiver, _accessManager, _startPenaltyPercentage, _timeLockDuration
         )
     { }
 
@@ -71,8 +65,9 @@ contract sPRL1 is TimeLockPenaltyERC20 {
         nonReentrant
     {
         // @dev using try catch to avoid reverting the transaction in case of front-running
-        try IERC20Permit(address(underlying)).permit(msg.sender, address(this), _assetAmount, _deadline, _v, _r, _s) {
-        } catch { }
+        try IERC20Permit(address(underlying))
+            .permit(msg.sender, address(this), _assetAmount, _deadline, _v, _r, _s) { }
+            catch { }
         underlying.safeTransferFrom(msg.sender, address(this), _assetAmount);
         _deposit(_assetAmount);
     }

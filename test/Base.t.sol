@@ -78,11 +78,7 @@ abstract contract Base_Test is Test, Deploys, Assertions, Defaults, Utils {
         address owner = vm.addr(privateKey);
         deadline = block.timestamp + 1 days;
         SigUtils.Permit memory permit = SigUtils.Permit({
-            owner: owner,
-            spender: spender,
-            value: amount,
-            nonce: IERC20Permit(token).nonces(owner),
-            deadline: deadline
+            owner: owner, spender: spender, value: amount, nonce: IERC20Permit(token).nonces(owner), deadline: deadline
         });
 
         bytes32 digest = sigUtils.getTypedDataHash(permit);

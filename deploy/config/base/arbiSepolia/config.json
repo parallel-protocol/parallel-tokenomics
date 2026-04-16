@@ -2,7 +2,7 @@
   "isMainChainFeeDistributor": false,
   "accessManager": "0xE2A0FA5A1e7315e6b89b12Ace2541A6a0d3E5370",
   "wallets": {
-    "dao": "0x3676b6ed4ae0c9ce3E0034510719fdF5fd585d55"
+    "dao": "0x66CcEC236bbcE5f1bBd1b2fC0a4014e57A55ad02"
   },
   "tokens": {
     "prl": "0x0F4DE51EF1E7611aD0A9181F2d62B9c8408EFfa2",

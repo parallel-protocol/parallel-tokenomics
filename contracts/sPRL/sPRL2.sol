@@ -24,7 +24,7 @@ contract sPRL2 is TimeLockPenaltyERC20 {
     string constant SYMBOL = "sPRL2";
 
     /// @dev Aura Pool PID is hardcoded and must be updated before deploying
-    uint256 public constant AURA_POOL_PID = 244;
+    uint256 public constant AURA_POOL_PID = 258;
 
     //-------------------------------------------
     // Storage
@@ -117,13 +117,7 @@ contract sPRL2 is TimeLockPenaltyERC20 {
         BPTConfigParams memory _configParams
     )
         TimeLockPenaltyERC20(
-            NAME,
-            SYMBOL,
-            _stakedAuraBPT,
-            _feeReceiver,
-            _accessManager,
-            _startPenaltyPercentage,
-            _timeLockDuration
+            NAME, SYMBOL, _stakedAuraBPT, _feeReceiver, _accessManager, _startPenaltyPercentage, _timeLockDuration
         )
     {
         if (_configParams.rewardTokens.length == 0) {
