@@ -129,6 +129,8 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
     error PercentageOutOfRange(uint256 attemptedPercentage);
     /// @notice Thrown when the penalty percentage is too high.
     error MaxPenaltyPercentageExceeded();
+    /// @notice Thrown when a withdrawal request is made with a zero amount.
+    error NullAmount();
 
     //-------------------------------------------
     // Constructor
@@ -172,6 +174,7 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
     /// @notice Request to withdraw assets from the contract.
     /// @param _unlockingAmount The amount of assets to unlock.
     function requestWithdraw(uint256 _unlockingAmount) external {
+        if (_unlockingAmount == 0) revert NullAmount();
         _burn(msg.sender, _unlockingAmount);
 
         uint256 id = userVsNextID[msg.sender]++;
