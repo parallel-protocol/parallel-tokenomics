@@ -25,7 +25,7 @@ contract SPRL2V2_Constructor_Integrations_Test is Integrations_Test {
         assertEq(sprl2v2.unlockingAmount(), 0);
         assertEq(sprl2v2.feeReceiver(), users.daoTreasury.addr);
         assertEq(sprl2v2.name(), "Stake 20WETH-80PRL Deposit Vault");
-        assertEq(sprl2v2.symbol(), "sPRL2");
+        assertEq(sprl2v2.symbol(), "sPRL2V2");
         assertEq(address(sprl2v2.BALANCER_ROUTER()), address(balancerV3RouterMock));
         assertEq(address(sprl2v2.BPT()), address(bpt));
         assertEq(address(sprl2v2.PRL()), address(prl));
