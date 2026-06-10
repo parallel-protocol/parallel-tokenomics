@@ -32,4 +32,21 @@ contract SPRL2V2_Constructor_Integrations_Test is Integrations_Test {
         assertEq(address(sprl2v2.WETH()), address(weth));
         assertEq(address(sprl2v2.PERMIT2()), address(permit2));
     }
+
+    function test_SPRL2V2_Constructor_RevertWhen_FeeReceiverZeroAddress() external {
+        vm.expectRevert(TimeLockPenaltyERC20.FeeReceiverZeroAddress.selector);
+        new sPRL2V2(
+            address(0),
+            address(accessManager),
+            DEFAULT_PENALTY_PERCENTAGE,
+            DEFAULT_TIME_LOCK_DURATION,
+            sPRL2V2.BPTConfigParams({
+                balancerRouter: IBalancerV3Router(address(balancerV3RouterMock)),
+                balancerBPT: IERC20(address(bpt)),
+                prl: IERC20(address(prl)),
+                weth: IWrappedNative(address(weth)),
+                permit2: IPermit2(address(permit2))
+            })
+        );
+    }
 }

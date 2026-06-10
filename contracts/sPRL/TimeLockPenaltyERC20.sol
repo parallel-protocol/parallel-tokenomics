@@ -131,6 +131,8 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
     error MaxPenaltyPercentageExceeded();
     /// @notice Thrown when a withdrawal request is made with a zero amount.
     error NullAmount();
+    /// @notice Thrown when the fee receiver is set to the zero address.
+    error FeeReceiverZeroAddress();
 
     //-------------------------------------------
     // Constructor
@@ -159,6 +161,9 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
         }
         if (_startPenaltyPercentage > MAX_PENALTY_PERCENTAGE) {
             revert PercentageOutOfRange(_startPenaltyPercentage);
+        }
+        if (_feeReceiver == address(0)) {
+            revert FeeReceiverZeroAddress();
         }
 
         feeReceiver = _feeReceiver;
@@ -269,6 +274,9 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
     /// @notice Allow the AccessManager to update the fee receiver address.
     /// @param _newFeeReceiver The new fee receiver.
     function updateFeeReceiver(address _newFeeReceiver) public virtual restricted {
+        if (_newFeeReceiver == address(0)) {
+            revert FeeReceiverZeroAddress();
+        }
         emit FeeReceiverUpdated(_newFeeReceiver);
         feeReceiver = _newFeeReceiver;
     }
