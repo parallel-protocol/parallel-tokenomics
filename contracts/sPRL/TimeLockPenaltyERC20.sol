@@ -7,6 +7,7 @@ import { ERC20Votes } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20
 import { IERC20Permit } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { AccessManaged } from "@openzeppelin/contracts/access/manager/AccessManaged.sol";
 import { Pausable } from "@openzeppelin/contracts/utils/Pausable.sol";
 import { Nonces } from "@openzeppelin/contracts/utils/Nonces.sol";
@@ -22,6 +23,7 @@ import { MathsLib } from "contracts/libraries/MathsLib.sol";
 /// @custom:contact security@cooperlabs.xyz
 abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, AccessManaged, Pausable, ReentrancyGuard {
     using MathsLib for *;
+    using SafeERC20 for IERC20;
 
     //-------------------------------------------
     // Storage
@@ -115,6 +117,11 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
     /// @param newPercentage The new penalty percentage.
     event StartPenaltyPercentageUpdated(uint256 oldPercentage, uint256 newPercentage);
 
+    /// @notice Emitted when extra tokens are recovered to the fee receiver.
+    /// @param token The address of the recovered token.
+    /// @param amount The amount of tokens recovered.
+    event TokensRecovered(address token, uint256 amount);
+
     //-------------------------------------------
     // Errors
     //-------------------------------------------
@@ -133,6 +140,8 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
     error NullAmount();
     /// @notice Thrown when the fee receiver is set to the zero address.
     error FeeReceiverZeroAddress();
+    /// @notice Thrown when trying to recover the underlying token, which backs user shares.
+    error CannotRecoverUnderlying();
 
     //-------------------------------------------
     // Constructor
@@ -291,6 +300,17 @@ abstract contract TimeLockPenaltyERC20 is ERC20, ERC20Permit, ERC20Votes, Access
     /// @dev This function can only be called by the AccessManager.
     function unpause() external restricted {
         _unpause();
+    }
+
+    /// @notice Recover extra tokens sitting idle in the contract (e.g. reward tokens sent on its behalf).
+    /// @dev The underlying token cannot be recovered as it backs user shares. Recovered tokens are sent to the fee
+    /// receiver.
+    /// @param _token The token to recover.
+    function recoverERC20(IERC20 _token) external restricted {
+        if (_token == underlying) revert CannotRecoverUnderlying();
+        uint256 balance = _token.balanceOf(address(this));
+        emit TokensRecovered(address(_token), balance);
+        _token.safeTransfer(feeReceiver, balance);
     }
 
     //-------------------------------------------
