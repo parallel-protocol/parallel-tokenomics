@@ -36,6 +36,11 @@ contract SPRL2V2_RequestWithdraw_Integrations_Test is Integrations_Test {
         assertEq(requestIds[0], 0);
     }
 
+    function test_SPRL2V2_RequestWithdraw_RevertWhen_AmountZero() external {
+        vm.expectRevert(TimeLockPenaltyERC20.NullAmount.selector);
+        sprl2v2.requestWithdraw(0);
+    }
+
     function testFuzz_SPRL2V2_RequestWithdraw_Several(uint16 requestTime) external {
         requestTime = _boundUint16(requestTime, 1, 100);
         uint256 withdrawAmount = INITIAL_BALANCE / requestTime;

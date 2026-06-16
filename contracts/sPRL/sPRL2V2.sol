@@ -19,7 +19,7 @@ contract sPRL2V2 is TimeLockPenaltyERC20 {
     using SafeERC20 for IERC20;
 
     string constant NAME = "Stake 20WETH-80PRL Deposit Vault";
-    string constant SYMBOL = "sPRL2";
+    string constant SYMBOL = "sPRL2V2";
 
     //-------------------------------------------
     // Storage

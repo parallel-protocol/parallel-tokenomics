@@ -18,4 +18,10 @@ contract SPRL2V2_UpdateFeeReceiver_Integrations_Test is Integrations_Test {
         vm.expectRevert(abi.encodeWithSelector(IAccessManaged.AccessManagedUnauthorized.selector, users.hacker.addr));
         sprl2v2.updateFeeReceiver(newPaymentReceiver);
     }
+
+    function test_SPRL2V2_UpdateFeeReceiver_RevertWhen_ZeroAddress() external {
+        vm.startPrank(users.admin.addr);
+        vm.expectRevert(TimeLockPenaltyERC20.FeeReceiverZeroAddress.selector);
+        sprl2v2.updateFeeReceiver(address(0));
+    }
 }
