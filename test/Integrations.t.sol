@@ -53,6 +53,16 @@ abstract contract Integrations_Test is Base_Test {
             })
         );
 
+        sprl2v2 = _deploySPRL2V2(
+            users.daoTreasury.addr,
+            address(accessManager),
+            DEFAULT_PENALTY_PERCENTAGE,
+            DEFAULT_TIME_LOCK_DURATION,
+            sPRL2V2.BPTConfigParams({
+                balancerRouter: balancerV3RouterMock, balancerBPT: bpt, prl: prl, weth: weth, permit2: permit2
+            })
+        );
+
         rewardMerkleDistributor =
             _deployRewardMerkleDistributor(address(accessManager), address(par), users.daoTreasury.addr);
     }

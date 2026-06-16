@@ -41,4 +41,12 @@ export type ConfigData = {
     balancerBPT: Address;
     rewardsTokens: Address[];
   };
+  sprl2v2: {
+    permit2: Address;
+    feeReceiver: string;
+    startPenaltyPercentage: BigNumberish;
+    timeLockDuration: number;
+    balancerV3Router: Address;
+    balancerBPT: Address;
+  };
 };
