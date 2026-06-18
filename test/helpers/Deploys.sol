@@ -16,6 +16,7 @@ import { FeeCollectorCore } from "contracts/fees/FeeCollectorCore.sol";
 
 import { sPRL1 } from "contracts/sPRL/sPRL1.sol";
 import { sPRL2 } from "contracts/sPRL/sPRL2.sol";
+import { sPRL2V2 } from "contracts/sPRL/sPRL2V2.sol";
 
 import { RewardMerkleDistributor } from "contracts/rewardMerkleDistributor/RewardMerkleDistributor.sol";
 
@@ -40,7 +41,6 @@ abstract contract Deploys is Test {
 
     ERC20Mock internal par;
     ERC20Mock internal prl;
-    ERC20Mock internal paUSD;
 
     ERC20Mock internal bpt;
     ERC20Mock internal auraBpt;
@@ -66,6 +66,7 @@ abstract contract Deploys is Test {
     AccessManager internal accessManager;
 
     sPRL2 internal sprl2;
+    sPRL2V2 internal sprl2v2;
     sPRL1 internal sprl1;
     TimeLockPenaltyERC20Mock internal timeLockPenaltyERC20;
 
@@ -236,5 +237,21 @@ abstract contract Deploys is Test {
 
         auraRewardPoolMock = new AuraRewardPoolMock(address(auraBoosterLiteMock));
         vm.label({ account: address(auraRewardPoolMock), newLabel: "AuraRewardPoolMock" });
+    }
+
+    function _deploySPRL2V2(
+        address _feeReceiver,
+        address _accessManager,
+        uint256 _startPenaltyPercentage,
+        uint64 _timeLockDuration,
+        sPRL2V2.BPTConfigParams memory _configParams
+    )
+        internal
+        returns (sPRL2V2)
+    {
+        sPRL2V2 _sPRL2V2 =
+            new sPRL2V2(_feeReceiver, _accessManager, _startPenaltyPercentage, _timeLockDuration, _configParams);
+        vm.label({ account: address(_sPRL2V2), newLabel: "sPRL2V2" });
+        return _sPRL2V2;
     }
 }

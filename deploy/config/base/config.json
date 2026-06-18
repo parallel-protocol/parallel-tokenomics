@@ -1,0 +1,40 @@
+{
+  "isMainChainFeeDistributor": false,
+  "accessManager": "0x0e4e7Ca9D7b1e6293D0713EFEfB4BCA010DeBF46",
+  "wallets": {
+    "dao": "0xC5201FFE258a95Af986E7cD1fcaD54f3f63f2C95"
+  },
+  "tokens": {
+    "prl": "0xfD28f108e95f4D41daAE9dbfFf707D677985998E",
+    "par": "0x0000000000000000000000000000000000000000",
+    "weth": "0x0000000000000000000000000000000000000000"
+  },
+  "rewardMerkleDistributor": {
+    "token": "par",
+    "expiredRewardsRecipient": "dao"
+  },
+  "feeDistributor": {
+    "mainChain": "polygon",
+    "destinationReceiver": "0x0000000000000000000000000000000000000000",
+    "feeToken": "par",
+    "bridgeableToken": "0x0000000000000000000000000000000000000000"
+  },
+  "sprl1": {
+    "underlying": "prl",
+    "feeReceiver": "dao",
+    "startPenaltyPercentage": "500000000000000000",
+    "timeLockDuration": 2419200
+  },
+  "sprl2": {
+    "feeReceiver": "dao",
+    "permit2": "0x0000000000000000000000000000000000000000",
+    "startPenaltyPercentage": "500000000000000000",
+    "timeLockDuration": 2419200,
+    "balancerV3Router": "0x0000000000000000000000000000000000000000",
+    "auraRewardsPool": "0x0000000000000000000000000000000000000000",
+    "auraBoosterLite": "0x0000000000000000000000000000000000000000",
+    "auraBPT": "0x0000000000000000000000000000000000000000",
+    "balancerBPT": "0x0000000000000000000000000000000000000000",
+    "rewardsTokens": []
+  }
+}

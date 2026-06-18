@@ -1,6 +1,6 @@
 # Parallel Tokenomics
 
-## 1. Overview
+## Summary
 
 The Parallel Tokenomics system consists of smart contracts that enable:
 
@@ -29,22 +29,11 @@ The Parallel Tokenomics system consists of smart contracts that enable:
   - MainFeeDistributor: Mainnet
   - SideChainFeeDistributor: Polygon, Fantom
 
-The high-level architecture of the protocol is shown below:
+## Architecture
 
 ![High Level Architecture](./docs/assets/high-level-architecture.png)
 
-## 2. Folder Structure
-
-- [Broadcast](./broadcast) folder contains Foundry transactions executed by scripts.
-- [Contracts](./contracts) folder contains contracts source code.
-- [Deploy](./deploy) folder contains hardhat deployment scripts.
-- [Deployments](./deployments) folder contains info of contracts deployed per network.
-- [Docs](./docs) folder contains all documentation related to main contracts.
-- [Script](./scripts) folder contains Foundry scripts to interact with onchain contracts.
-- [Test](./test) folder contains all tests related to the contracts with mocks and settings.
-- [Utils](./utils) folder contains helper functions.
-
-## 3. Documentation
+## Documentation Links
 
 Additional documentation can be found in the `/docs` directory:
 
@@ -52,7 +41,7 @@ Additional documentation can be found in the `/docs` directory:
 - [Deployments Contracts](docs/Deployment.md)
 - [Technical Specifications](docs/TechnicalSpecs.md)
 
-## 4. Getting Started
+## Security
 
 ### Foundry
 
@@ -65,18 +54,14 @@ Foundry is used for testing and scripting. To
 bun i
 ```
 
-### Fill the `.env` file with your data
-
-The Foundry script relies solely on the PRIVATE_KEY. The MNEMONIC is used on the Hardhat side and will override the
-PRIVATE_KEY if it is defined.
+### Setup `.env` file
 
 ```bash
-export API_KEY_ALCHEMY="YOUR_API_KEY_ALCHEMY"
-export API_KEY_ETHERSCAN="YOUR_API_KEY_ETHERSCAN"
-export API_KEY_POLYGONSCAN="YOUR_API_KEY_POLYGONSCAN"
-export MNEMONIC="YOUR_MNEMONIC"
-export PRIVATE_KEY="YOUR_PRIVATE_KEY"
-export FOUNDRY_PROFILE="default"
+MNEMONIC="YOUR_MNEMONIC"
+PRIVATE_KEY="PRIVATE_KEY"
+ALCHEMY_API_KEY="ALCHEMY_API_KEY"
+MAINNET_ETHERSCAN_API_KEY="MAINNET_ETHERSCAN_API_KEY"
+POLYGON_ETHERSCAN_API_KEY="POLYGON_ETHERSCAN_API_KEY"
 ```
 
 ### Compile contracts
@@ -93,6 +78,20 @@ bun run test
 
 You will find other useful commands in the [package.json](./package.json) file.
 
-## Licences
+## Contributing
 
-All contracts is under the `MIT` License, see [`LICENSE`](./LICENSE).
+If you're interested in contributing, please see our [contributions guidelines](./CONTRIBUTING.md).
+
+## Questions & Feedback
+
+For any question or feedback you can use [discord](https://discord.com/invite/mimodao). Don't hesitate to reach out on
+[Twitter](https://twitter.com/mimo_labs)🐦 as well.
+
+## Licensing
+
+The primary license for this repository is the MIT license. See [`LICENSE`](./LICENSE). Minus the following exceptions:
+
+- tests files are under UNLICENSED license
+- mocks contracts are under UNLICENSED license
+
+Each of these files states their license type.

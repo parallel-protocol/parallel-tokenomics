@@ -1,12 +1,6 @@
-import type { CallOptions } from "hardhat-deploy/types";
-import { ethers } from "ethers";
+import { isAddress, zeroAddress } from "viem";
 import { Address, ConfigData } from "./types";
 import { EndpointId } from "@layerzerolabs/lz-definitions";
-
-export const GAS: CallOptions = {
-  maxFeePerGas: "20000000000", // 20 gwei
-  maxPriorityFeePerGas: "1000000000",
-};
 
 export const getLzEidReceiver = (mainchain: string) => {
   if (mainchain === "sepolia") return EndpointId.SEPOLIA_V2_TESTNET;
@@ -39,5 +33,5 @@ export const checkAddressValid = (address: Address, label: string) => {
 };
 
 export const isAddressValid = (address: string) => {
-  return ethers.utils.isAddress(address) && ethers.constants.AddressZero !== address;
+  return isAddress(address) && zeroAddress !== address;
 };

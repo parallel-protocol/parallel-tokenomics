@@ -1,46 +1,39 @@
 import assert from "assert";
+import { deployScript, artifacts } from "@rocketh";
 
-import { ethers } from "ethers";
-import { type DeployFunction } from "hardhat-deploy/types";
-
-import { checkAddressValid, GAS, getLzEidReceiver, getTokenAddressFromConfig, isAddressValid } from "../../utils";
+import { checkAddressValid, getLzEidReceiver, getTokenAddressFromConfig } from "../../utils";
 import { readFileSync } from "fs";
 import { ConfigData } from "../../utils/types";
 
 const contractName = "SideChainFeeCollector";
 
-const deploy: DeployFunction = async (hre) => {
-  const { getNamedAccounts, deployments } = hre;
+export default deployScript(
+  async ({ namedAccounts, name, deploy }) => {
+    const { deployer } = namedAccounts;
+    assert(deployer, "Missing deployer account");
+    console.log(`Network: ${name}\nDeployer: ${deployer}\nDeploying: ${contractName}`);
 
-  const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+    const config: ConfigData = JSON.parse(readFileSync(`./deploy/config/${name}/config.json`).toString());
+    if (config.isMainChainFeeDistributor) throw new Error("SideChainFeeCollector must be deployed on side chain");
 
-  assert(deployer, "Missing deployer account");
+    const accessManager = checkAddressValid(config.accessManager, "access manager");
 
-  console.log(`Network: ${hre.network.name}`);
-  console.log(`Deployer: ${deployer}`);
-  const config: ConfigData = JSON.parse(readFileSync(`./deploy/config/${hre.network.name}/config.json`).toString());
-  if (config.isMainChainFeeDistributor) throw new Error("SideChainFeeCollector must be deployed on side chain");
+    const feeDistributorData = config.feeDistributor;
+    const lzEidReceiver = getLzEidReceiver(feeDistributorData.mainChain);
+    const destinationReceiver = checkAddressValid(feeDistributorData.destinationReceiver, "destination receiver");
+    const bridgeableToken = checkAddressValid(feeDistributorData.bridgeableToken, "bridgeable token");
 
-  const accessManager = checkAddressValid(config.accessManager, "access manager");
+    const feeToken = getTokenAddressFromConfig(feeDistributorData.feeToken, config);
 
-  const feeDistributorData = config.feeDistributor;
-  const lzEidReceiver = getLzEidReceiver(feeDistributorData.mainChain);
-  const destinationReceiver = checkAddressValid(feeDistributorData.destinationReceiver, "destination receiver");
-  const bridgeableToken = checkAddressValid(feeDistributorData.bridgeableToken, "bridgeable token");
+    const contract = await deploy(contractName, {
+      account: deployer,
+      artifact: artifacts.SideChainFeeCollector,
+      args: [accessManager, lzEidReceiver, bridgeableToken, destinationReceiver, feeToken],
+    });
 
-  const feeToken = getTokenAddressFromConfig(feeDistributorData.feeToken, config);
-
-  const contract = await deploy(contractName, {
-    from: deployer,
-    args: [accessManager, lzEidReceiver, bridgeableToken, destinationReceiver, feeToken],
-    log: true,
-    skipIfAlreadyDeployed: false,
-    ...GAS,
-  });
-
-  console.log(`Deployed contract: ${contractName}, network: ${hre.network.name}, address: ${contract.address}`);
-};
-
-deploy.tags = [contractName];
-export default deploy;
+    console.log(`Deployed ${contractName}, network: ${name}, address: ${contract.address}`);
+  },
+  {
+    tags: [contractName],
+  },
+);

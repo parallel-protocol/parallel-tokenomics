@@ -1,67 +1,62 @@
 import assert from "assert";
+import { deployScript, artifacts } from "@rocketh";
 
-import { ethers } from "ethers";
-import { type DeployFunction } from "hardhat-deploy/types";
-
-import {
-  checkAddressValid,
-  GAS,
-  getTokenAddressFromConfig,
-  getWalletAddressFromConfig,
-  isAddressValid,
-} from "../../utils";
+import { checkAddressValid, getTokenAddressFromConfig, getWalletAddressFromConfig, isAddressValid } from "../../utils";
 import { readFileSync } from "fs";
 import { ConfigData } from "../../utils/types";
 
 const contractName = "sPRL2";
 
-const deploy: DeployFunction = async (hre) => {
-  const { getNamedAccounts, deployments } = hre;
+export default deployScript(
+  async ({ namedAccounts, name, deploy }) => {
+    const { deployer } = namedAccounts;
+    assert(deployer, "Missing deployer account");
+    console.log(`Network: ${name}\nDeployer: ${deployer}\nDeploying: ${contractName}`);
 
-  const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+    const config: ConfigData = JSON.parse(readFileSync(`./deploy/config/${name}/config.json`).toString());
+    const accessManager = config.accessManager;
+    if (!isAddressValid(accessManager)) throw new Error("Invalid access manager address");
 
-  assert(deployer, "Missing deployer account");
+    const sprl2Data = config.sprl2;
+    const prlToken = getTokenAddressFromConfig("prl", config);
+    const wethToken = getTokenAddressFromConfig("weth", config);
 
-  console.log(`Network: ${hre.network.name}`);
-  console.log(`Deployer: ${deployer}`);
+    const permit2 = checkAddressValid(sprl2Data.permit2, "Permit2");
+    const feeReceiver = getWalletAddressFromConfig(sprl2Data.feeReceiver, config);
+    const balancerRouter = checkAddressValid(sprl2Data.balancerV3Router, "Balancer V3 Router");
+    const balancerBPT = checkAddressValid(sprl2Data.balancerBPT, "Balancer BPT");
+    const auraBoosterLite = checkAddressValid(sprl2Data.auraBoosterLite, "Aura Booster Lite");
+    const auraRewardsPool = checkAddressValid(sprl2Data.auraRewardsPool, "Aura Rewards Pool");
+    const auraBPT = checkAddressValid(sprl2Data.auraBPT, "Aura BPT");
+    const rewardsTokens = sprl2Data.rewardsTokens.map((token) => checkAddressValid(token, "Reward Token"));
 
-  const config: ConfigData = JSON.parse(readFileSync(`./deploy/config/${hre.network.name}/config.json`).toString());
-  const accessManager = config.accessManager;
-  if (!isAddressValid(accessManager)) throw new Error("Invalid access manager address");
-
-  const sprl2Data = config.sprl2;
-  const prlToken = getTokenAddressFromConfig("prl", config);
-  const wethToken = getTokenAddressFromConfig("weth", config);
-
-  const auraBPT = checkAddressValid(sprl2Data.auraBPT, "Aura BPT");
-  const auraBoosterLite = checkAddressValid(sprl2Data.auraBoosterLite, "Aura Booster Lite");
-  const auraVault = checkAddressValid(sprl2Data.auraVault, "Aura Vault");
-  const balancerBPT = checkAddressValid(sprl2Data.balancerBPT, "Balancer BPT");
-
-  const feeReceiver = getWalletAddressFromConfig(sprl2Data.feeReceiver, config);
-
-  const contract = await deploy(contractName, {
-    from: deployer,
-    args: [
-      auraBPT,
-      feeReceiver,
-      accessManager,
-      sprl2Data.startPenaltyPercentage,
-      sprl2Data.timeLockDuration,
-      balancerBPT,
+    const BPTConfigParams = {
+      balancerRouter,
       auraBoosterLite,
-      auraVault,
-      prlToken,
-      wethToken,
-    ],
-    log: true,
-    skipIfAlreadyDeployed: false,
-    ...GAS,
-  });
+      auraRewardsPool,
+      balancerBPT,
+      prl: prlToken,
+      weth: wethToken,
+      rewardTokens: rewardsTokens,
+      permit2,
+    };
 
-  console.log(`Deployed contract: ${contractName}, network: ${hre.network.name}, address: ${contract.address}`);
-};
+    const contract = await deploy(contractName, {
+      account: deployer,
+      artifact: artifacts.sPRL2,
+      args: [
+        auraBPT,
+        feeReceiver,
+        accessManager,
+        BigInt(sprl2Data.startPenaltyPercentage),
+        BigInt(sprl2Data.timeLockDuration),
+        BPTConfigParams,
+      ],
+    });
 
-deploy.tags = [contractName];
-export default deploy;
+    console.log(`Deployed ${contractName}, network: ${name}, address: ${contract.address}`);
+  },
+  {
+    tags: [contractName],
+  },
+);

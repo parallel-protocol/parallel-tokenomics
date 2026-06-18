@@ -120,10 +120,7 @@ contract RewardMerkleDistributor_ForwardExpiredRewards_Integrations_Test is Inte
 
         RewardMerkleDistributor.ClaimCallData[] memory claimsData = new RewardMerkleDistributor.ClaimCallData[](1);
         claimsData[0] = RewardMerkleDistributor.ClaimCallData({
-            epochId: firstEpochId,
-            account: users.alice.addr,
-            amount: firstRewardsAmount,
-            merkleProof: proof
+            epochId: firstEpochId, account: users.alice.addr, amount: firstRewardsAmount, merkleProof: proof
         });
 
         rewardMerkleDistributor.claims(claimsData);
@@ -163,9 +160,7 @@ contract RewardMerkleDistributor_ForwardExpiredRewards_Integrations_Test is Inte
         rewardMerkleDistributor.forwardExpiredRewards(epochIds);
     }
 
-    function test_RewardMerkleDistributor_ForwardExpiredRewards_RevertWhen_EpochIsNotExpired_SeveralEpochs()
-        external
-    {
+    function test_RewardMerkleDistributor_ForwardExpiredRewards_RevertWhen_EpochIsNotExpired_SeveralEpochs() external {
         vm.startPrank(users.admin.addr);
         uint64[] memory epochIds = new uint64[](2);
         epochIds[0] = firstEpochId;

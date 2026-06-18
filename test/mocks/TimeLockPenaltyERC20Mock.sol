@@ -14,13 +14,7 @@ contract TimeLockPenaltyERC20Mock is TimeLockPenaltyERC20 {
         uint64 timeLockDuration
     )
         TimeLockPenaltyERC20(
-            name,
-            symbol,
-            underlying,
-            feeReceiver,
-            accessManager,
-            startPenaltyPercentage,
-            timeLockDuration
+            name, symbol, underlying, feeReceiver, accessManager, startPenaltyPercentage, timeLockDuration
         )
     { }
 }
