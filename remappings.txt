@@ -2,3 +2,4 @@
 @forge-std/=node_modules/forge-std/src/
 @layerzerolabs/=node_modules/@layerzerolabs/
 @murky/=node_modules/murky/src/
+contracts/=contracts/

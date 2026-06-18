@@ -1,35 +1,30 @@
 import "dotenv/config";
 
-import "hardhat-deploy";
+import HardhatViem from "@nomicfoundation/hardhat-viem";
+import HardhatDeploy from "hardhat-deploy";
 
-import { HardhatUserConfig, HttpNetworkAccountsUserConfig } from "hardhat/types";
+import { HardhatUserConfig } from "hardhat/types/config";
 
 import { getRpcURL } from "./utils/getRpcURL";
-import { getVerifyConfig } from "./utils/getVerifyConfig";
 
-const MNEMONIC = process.env.MNEMONIC;
-
-// If you prefer to be authenticated using a private key, set a PRIVATE_KEY environment variable
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-
-const accounts: HttpNetworkAccountsUserConfig | undefined = MNEMONIC
-  ? { mnemonic: MNEMONIC }
-  : PRIVATE_KEY
-    ? [PRIVATE_KEY]
-    : undefined;
-
-if (accounts == null) {
-  console.warn(
-    "Could not find MNEMONIC or PRIVATE_KEY environment variables. It will not be possible to execute transactions in your example.",
-  );
-}
+if (!PRIVATE_KEY) throw new Error("PRIVATE_KEY is not set");
+const accounts = [PRIVATE_KEY];
 
 const config: HardhatUserConfig = {
+  plugins: [HardhatViem, HardhatDeploy],
+  // Foundry tests live in `test/`; keep Hardhat from compiling them by pointing its
+  // Solidity sources at `contracts/` and its test dir at an unused path.
+  paths: {
+    sources: "contracts",
+    tests: "hardhat-test",
+  },
   solidity: {
     compilers: [
       {
         version: "0.8.25",
         settings: {
+          evmVersion: "cancun",
           optimizer: {
             enabled: true,
             runs: 10_000,
@@ -40,39 +35,34 @@ const config: HardhatUserConfig = {
   },
   networks: {
     mainnet: {
-      accounts,
+      type: "http",
       url: getRpcURL("mainnet"),
-      verify: getVerifyConfig("mainnet"),
+      accounts,
     },
     sepolia: {
-      accounts,
+      type: "http",
       url: getRpcURL("sepolia"),
-      verify: getVerifyConfig("sepolia"),
+      accounts,
     },
     arbiSepolia: {
-      accounts,
+      type: "http",
       url: getRpcURL("arbiSepolia"),
-      verify: getVerifyConfig("arbiSepolia"),
+      accounts,
     },
     polygon: {
-      accounts,
+      type: "http",
       url: getRpcURL("polygon"),
-      verify: getVerifyConfig("polygon"),
+      accounts,
     },
     base: {
+      type: "http",
       url: getRpcURL("base"),
-      verify: getVerifyConfig("base"),
       accounts,
     },
     sonic: {
+      type: "http",
       url: getRpcURL("sonic"),
-      verify: getVerifyConfig("sonic"),
       accounts,
-    },
-  },
-  namedAccounts: {
-    deployer: {
-      default: 0,
     },
   },
 };

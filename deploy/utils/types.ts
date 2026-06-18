@@ -1,6 +1,6 @@
-import type { BigNumberish } from "ethers";
-
 export type Address = `0x${string}`;
+
+export type Numeric = string | number | bigint;
 
 export type ConfigData = {
   isMainChainFeeDistributor: boolean;
@@ -26,13 +26,13 @@ export type ConfigData = {
   sprl1: {
     underlying: Address;
     feeReceiver: string;
-    startPenaltyPercentage: BigNumberish;
+    startPenaltyPercentage: Numeric;
     timeLockDuration: number;
   };
   sprl2: {
     permit2: Address;
     feeReceiver: string;
-    startPenaltyPercentage: BigNumberish;
+    startPenaltyPercentage: Numeric;
     timeLockDuration: number;
     balancerV3Router: Address;
     auraRewardsPool: Address;
@@ -44,7 +44,7 @@ export type ConfigData = {
   sprl2v2: {
     permit2: Address;
     feeReceiver: string;
-    startPenaltyPercentage: BigNumberish;
+    startPenaltyPercentage: Numeric;
     timeLockDuration: number;
     balancerV3Router: Address;
     balancerBPT: Address;

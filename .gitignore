@@ -20,3 +20,4 @@ lcov.info
 artifacts
 cache_hardhat
 deployments
+generated

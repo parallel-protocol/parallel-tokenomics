@@ -1,6 +1,5 @@
 import assert from "assert";
-
-import { type DeployFunction } from "hardhat-deploy/types";
+import { deployScript, artifacts } from "@rocketh";
 
 import { checkAddressValid, getTokenAddressFromConfig, getWalletAddressFromConfig } from "../../utils";
 import { readFileSync } from "fs";
@@ -8,39 +7,34 @@ import { ConfigData } from "../../utils/types";
 
 const contractName = "RewardMerkleDistributor";
 
-const deploy: DeployFunction = async (hre) => {
-  const { getNamedAccounts, deployments } = hre;
+export default deployScript(
+  async ({ namedAccounts, name, deploy }) => {
+    const { deployer } = namedAccounts;
+    assert(deployer, "Missing deployer account");
+    console.log(`Network: ${name}\nDeployer: ${deployer}\nDeploying: ${contractName}`);
 
-  const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+    const config: ConfigData = JSON.parse(readFileSync(`./deploy/config/${name}/config.json`).toString());
 
-  assert(deployer, "Missing deployer account");
+    const accessManager = checkAddressValid(config.accessManager, "access manager");
 
-  console.log(`Network: ${hre.network.name}`);
-  console.log(`Deployer: ${deployer}`);
+    const rewardMerkleDistributorData = config.rewardMerkleDistributor;
 
-  const config: ConfigData = JSON.parse(readFileSync(`./deploy/config/${hre.network.name}/config.json`).toString());
+    const token = getTokenAddressFromConfig(rewardMerkleDistributorData.token, config);
 
-  const accessManager = checkAddressValid(config.accessManager, "access manager");
+    const expiredRewardsRecipient = getWalletAddressFromConfig(
+      rewardMerkleDistributorData.expiredRewardsRecipient,
+      config,
+    );
 
-  const rewardMerkleDistributorData = config.rewardMerkleDistributor;
+    const contract = await deploy(contractName, {
+      account: deployer,
+      artifact: artifacts.RewardMerkleDistributor,
+      args: [accessManager, token, expiredRewardsRecipient],
+    });
 
-  const token = getTokenAddressFromConfig(rewardMerkleDistributorData.token, config);
-
-  const expiredRewardsRecipient = getWalletAddressFromConfig(
-    rewardMerkleDistributorData.expiredRewardsRecipient,
-    config,
-  );
-
-  const contract = await deploy(contractName, {
-    from: deployer,
-    args: [accessManager, token, expiredRewardsRecipient],
-    log: true,
-    skipIfAlreadyDeployed: false,
-  });
-
-  console.log(`Deployed contract: ${contractName}, network: ${hre.network.name}, address: ${contract.address}`);
-};
-
-deploy.tags = [contractName];
-export default deploy;
+    console.log(`Deployed ${contractName}, network: ${name}, address: ${contract.address}`);
+  },
+  {
+    tags: [contractName],
+  },
+);
