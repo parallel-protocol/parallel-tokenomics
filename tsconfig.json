@@ -3,6 +3,7 @@
   "include": ["./hardhat.config.ts", "./rocketh.ts", "./scripts", "./deploy", "./utils"],
   "compilerOptions": {
     "lib": ["es2023"],
+    "types": ["node"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "target": "es2022",
