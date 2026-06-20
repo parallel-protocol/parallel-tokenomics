@@ -19,7 +19,7 @@ AccessRoleManager, bridgeable tokens, ...) are documented in their respective re
 
 | Contract                | Explore                                                                                                               |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| sPRL1                   | [0xeFc1309b67a52c5dFc2588bfC2D97A66AFC4d2Ce](https://basescan.org/address/0xeFc1309b67a52c5dFc2588bfC2D97A66AFC4d2Ce) |
+| sPRL1                   | [0x01fA35fDE0E813e2D6687660a74A313d8D922E48](https://basescan.org/address/0x01fA35fDE0E813e2D6687660a74A313d8D922E48) |
 | sPRL2V2                 | [0xB22f5eDbc62adCC093307025B8fdf75a0aa00e24](https://basescan.org/address/0xB22f5eDbc62adCC093307025B8fdf75a0aa00e24) |
 | RewardMerkleDistributor | [0x13E867f55043302925971e88aB8faB704241A96B](https://basescan.org/address/0x13E867f55043302925971e88aB8faB704241A96B) |
 | MainFeeDistributor      | [0x5D49C8b8cc691533742602d6aB3127904959B7e3](https://basescan.org/address/0x5D49C8b8cc691533742602d6aB3127904959B7e3) |
