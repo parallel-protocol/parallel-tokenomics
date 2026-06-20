@@ -12,6 +12,7 @@ export type ConfigData = {
     prl: Address;
     par: Address;
     weth: Address;
+    usdp: Address;
   };
   rewardMerkleDistributor: {
     token: string;
