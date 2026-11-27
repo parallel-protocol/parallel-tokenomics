@@ -30,7 +30,7 @@
     "feeReceiver": "dao",
     "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
     "startPenaltyPercentage": "500000000000000000",
-    "timeLockDuration": 2419200,
+    "timeLockDuration": 60,
     "balancerV3Router": "0x5C6fb490BDFD3246EB0bB062c168DeCAF4bD9FDd",
     "auraRewardsPool": "0x486Be73794Ec19f3e9cF57f06f03fDCf7F0A9da4",
     "auraBoosterLite": "0xA57b8d98dAE62B26Ec3bcC4a365338157060B234",
