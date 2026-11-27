@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "chainId": "8453",
+  "createdAt": 1795779344214,
+  "meta": {
+    "name": "sPRL2V2 sunset (base)",
+    "description": "On sPRL2V2 0xB22f5eDbc62adCC093307025B8fdf75a0aa00e24: updateStartPenaltyPercentage(0) so every withdrawal request, pending or new, can be withdrawn at once without fee, then pause() to block new deposits. Withdrawals stay open while paused.",
+    "txBuilderVersion": "1.18.0",
+    "createdFromSafeAddress": "0xC5201FFE258a95Af986E7cD1fcaD54f3f63f2C95",
+    "createdFromOwnerAddress": "",
+    "checksum": ""
+  },
+  "transactions": [
+    {
+      "to": "0xB22f5eDbc62adCC093307025B8fdf75a0aa00e24",
+      "value": "0",
+      "data": "0xd2a522f60000000000000000000000000000000000000000000000000000000000000000",
+      "contractMethod": null,
+      "contractInputsValues": null
+    },
+    {
+      "to": "0xB22f5eDbc62adCC093307025B8fdf75a0aa00e24",
+      "value": "0",
+      "data": "0x8456cb59",
+      "contractMethod": null,
+      "contractInputsValues": null
+    }
+  ]
+}
