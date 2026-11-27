@@ -12,13 +12,14 @@ import { IWrappedNative } from "contracts/interfaces/IWrappedNative.sol";
 /// @title sPRL2V3
 /// @author Cooper Labs
 /// @custom:contact security@cooperlabs.xyz
-/// @notice sPRL2V3 is a staking contract that allows users to deposit PRL and WETH into a Balancer V3 pool.
+/// @notice sPRL2V3 is a staking contract that allows users to deposit PRL and WETH into a FrontierFi pool (a Balancer
+/// V3 fork).
 /// The BPT is held by the contract.
 contract sPRL2V3 is TimeLockPenaltyERC20 {
     using Address for address payable;
     using SafeERC20 for IERC20;
 
-    string constant NAME = "Stake 20WETH-80PRL Deposit Vault";
+    string constant NAME = "Stake 20WETH-80PRL Frontier Deposit Vault";
     string constant SYMBOL = "sPRL2V3";
 
     //-------------------------------------------
