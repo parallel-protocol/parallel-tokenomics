@@ -10,9 +10,9 @@ AccessRoleManager, bridgeable tokens, ...) are documented in their respective re
 | Contract              | Explore                                                                                                               |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | sPRL1                 | [0xeAd729472f82E5eC2FF4e691d67633077C1B5901](https://etherscan.io/address/0xeAd729472f82E5eC2FF4e691d67633077C1B5901) |
-| sPRL2 (legacy, Aura)  | [0x90337e484B1Cb02132fc150d3Afa262147348545](https://etherscan.io/address/0x90337e484B1Cb02132fc150d3Afa262147348545) |
+| sPRL2 (legacy, Aura)  | [0xe8a2d848fe656e34a6caa35f375b42979e322135](https://etherscan.io/address/0xe8a2d848fe656e34a6caa35f375b42979e322135) |
 | sPRL2V2               | [0xa13BFA24b189271Ac00b148BE565D609AC847A4B](https://etherscan.io/address/0xa13BFA24b189271Ac00b148BE565D609AC847A4B) |
-| sPRL2Migrator         | [0xd0D8f12d9aB50bd434Bf8a82A55D74dFAc37d069](https://etherscan.io/address/0xd0D8f12d9aB50bd434Bf8a82A55D74dFAc37d069) |
+| sPRL2Migrator         | [0x2fE66473D35a98131e1D08ff519378AD62DbBbEF](https://etherscan.io/address/0x2fE66473D35a98131e1D08ff519378AD62DbBbEF) |
 | SideChainFeeCollector | [0xbEf8dD3E729a081855Ae7A5FcC5b6373f75d1ba9](https://etherscan.io/address/0xbEf8dD3E729a081855Ae7A5FcC5b6373f75d1ba9) |
 
 ### Base
