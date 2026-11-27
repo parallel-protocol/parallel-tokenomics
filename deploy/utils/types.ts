@@ -30,7 +30,8 @@ export type ConfigData = {
     startPenaltyPercentage: Numeric;
     timeLockDuration: number;
   };
-  sprl2: {
+  // Legacy sPRL2, mainnet only.
+  sprl2?: {
     permit2: Address;
     feeReceiver: string;
     startPenaltyPercentage: Numeric;

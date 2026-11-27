@@ -18,6 +18,11 @@ export default deployScript(
     if (!isAddressValid(accessManager)) throw new Error("Invalid access manager address");
 
     const sprl2Data = config.sprl2;
+    // The legacy sPRL2 only exists on mainnet: skip chains without its config so an untagged deploy goes on.
+    if (!sprl2Data) {
+      console.log(`No sprl2 config for ${name}, skipping ${contractName}`);
+      return;
+    }
     const prlToken = getTokenAddressFromConfig("prl", config);
     const wethToken = getTokenAddressFromConfig("weth", config);
 
