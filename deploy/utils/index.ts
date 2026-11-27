@@ -8,6 +8,7 @@ export const getLzEidReceiver = (mainchain: string) => {
   if (mainchain === "mainnet") return EndpointId.ETHEREUM_V2_MAINNET;
   if (mainchain === "fantom") return EndpointId.FANTOM_V2_MAINNET;
   if (mainchain === "polygon") return EndpointId.POLYGON_V2_MAINNET;
+  if (mainchain === "base") return EndpointId.BASE_V2_MAINNET;
   throw new Error(`Unsupported lzEidReceiver: ${mainchain}`);
 };
 
