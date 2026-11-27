@@ -1,23 +1,23 @@
 {
-  "isMainChainFeeDistributor": false,
+  "isMainChainFeeDistributor": true,
   "accessManager": "0x0e4e7Ca9D7b1e6293D0713EFEfB4BCA010DeBF46",
   "wallets": {
     "dao": "0xC5201FFE258a95Af986E7cD1fcaD54f3f63f2C95"
   },
   "tokens": {
     "prl": "0xfD28f108e95f4D41daAE9dbfFf707D677985998E",
-    "par": "0x0000000000000000000000000000000000000000",
-    "weth": "0x0000000000000000000000000000000000000000"
+    "usdp": "0x76A9A0062ec6712b99B4f63bD2b4270185759dd5",
+    "weth": "0x4200000000000000000000000000000000000006"
   },
   "rewardMerkleDistributor": {
-    "token": "par",
+    "token": "usdp",
     "expiredRewardsRecipient": "dao"
   },
   "feeDistributor": {
-    "mainChain": "polygon",
+    "mainChain": "base",
     "destinationReceiver": "0x0000000000000000000000000000000000000000",
-    "feeToken": "par",
-    "bridgeableToken": "0x0000000000000000000000000000000000000000"
+    "feeToken": "usdp",
+    "bridgeableToken": "0x4Dde0e308CFB60515218C6ad2DF1134Fc48531FC"
   },
   "sprl1": {
     "underlying": "prl",
@@ -25,16 +25,20 @@
     "startPenaltyPercentage": "500000000000000000",
     "timeLockDuration": 2419200
   },
-  "sprl2": {
+  "sprl2v2": {
     "feeReceiver": "dao",
-    "permit2": "0x0000000000000000000000000000000000000000",
+    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
     "startPenaltyPercentage": "500000000000000000",
     "timeLockDuration": 2419200,
-    "balancerV3Router": "0x0000000000000000000000000000000000000000",
-    "auraRewardsPool": "0x0000000000000000000000000000000000000000",
-    "auraBoosterLite": "0x0000000000000000000000000000000000000000",
-    "auraBPT": "0x0000000000000000000000000000000000000000",
-    "balancerBPT": "0x0000000000000000000000000000000000000000",
-    "rewardsTokens": []
+    "balancerV3Router": "0x3f170631ed9821Ca51A59D996aB095162438DC10",
+    "balancerBPT": "0x19e3e19945e7fd2a7856824c595981c7fe450bb5"
+  },
+  "sprl2v3": {
+    "feeReceiver": "dao",
+    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+    "startPenaltyPercentage": "500000000000000000",
+    "timeLockDuration": 2419200,
+    "frontierRouter": "0xB3C45499aa0ad2fF5d586E7d473C75d5781c557B",
+    "frontierBPT": "0x4D81A370dDFc086274f7F73738dBf0CAfAa6ee4c"
   }
 }
