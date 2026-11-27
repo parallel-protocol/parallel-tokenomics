@@ -50,4 +50,12 @@ export type ConfigData = {
     balancerV3Router: Address;
     balancerBPT: Address;
   };
+  sprl2v3: {
+    permit2: Address;
+    feeReceiver: string;
+    startPenaltyPercentage: Numeric;
+    timeLockDuration: number;
+    frontierRouter: Address;
+    frontierBPT: Address;
+  };
 };
