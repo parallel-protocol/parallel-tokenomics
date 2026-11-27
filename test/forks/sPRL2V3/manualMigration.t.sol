@@ -11,55 +11,25 @@ import { sPRL2V3 } from "contracts/sPRL/sPRL2V3.sol";
 import { TimeLockPenaltyERC20 } from "contracts/sPRL/TimeLockPenaltyERC20.sol";
 import { IBalancerV3Router } from "contracts/interfaces/IBalancerV3Router.sol";
 import { IPermit2 } from "contracts/interfaces/IPermit2.sol";
-
-/// @dev Read side of a Balancer V3 (or Frontier) pool and vault, as the frontend uses it to quote.
-interface IPoolLike {
-    function getVault() external view returns (IVaultLike);
-}
-
-interface IVaultLike {
-    struct TokenInfo {
-        uint8 tokenType;
-        address rateProvider;
-        bool paysYieldFees;
-    }
-
-    function getPoolTokenInfo(address pool)
-        external
-        view
-        returns (IERC20[] memory tokens, TokenInfo[] memory, uint256[] memory balancesRaw, uint256[] memory);
-}
+import { IBalancerV3Pool, IBalancerV3SwapRouter } from "contracts/interfaces/IBalancerV3Vault.sol";
+import { AlignFrontierAndSunset } from "scripts/AlignFrontierAndSunset.s.sol";
 
 interface IFrontierVaultErrors {
     error AmountInAboveMax(IERC20 tokenIn, uint256 amountIn, uint256 maxAmountIn);
-}
-
-interface IFrontierRouterSwap {
-    function swapSingleTokenExactIn(
-        address pool,
-        IERC20 tokenIn,
-        IERC20 tokenOut,
-        uint256 exactAmountIn,
-        uint256 minAmountOut,
-        uint256 deadline,
-        bool wethIsEth,
-        bytes calldata userData
-    )
-        external
-        payable
-        returns (uint256 amountOut);
+    error SwapLimit(uint256 amount, uint256 limit);
 }
 
 /// @notice Manual migration of the live Balancer-backed sPRL2V2 positions to the Frontier-backed sPRL2V3, on a fork.
-/// The DAO runs the sunset batch (penalty to 0, pause), then each user exits sPRL2V2 with requestWithdraw and
-/// withdrawPRLAndWeth in a row, and deposits the PRL and WETH into sPRL2V3 with depositPRLAndWeth.
+/// The DAO Safe runs the batch built by AlignFrontierAndSunset (align the Frontier price, penalty to 0, pause), then
+/// each user exits sPRL2V2 with requestWithdraw and withdrawPRLAndWeth in a row, and deposits the PRL and WETH into
+/// sPRL2V3 with depositPRLAndWeth.
 abstract contract ManualMigration_Fork_Test is Test {
     address constant PERMIT2 = 0x000000000022D473030F116dDEE9F6B43aC78BA3;
     address constant FRONTIER_ROUTER = 0xB3C45499aa0ad2fF5d586E7d473C75d5781c557B;
     /// @dev BPT slippage the frontend takes off its quote. The max amounts in stay the full withdrawn amounts.
     uint256 constant SLIPPAGE_BPS = 50;
-    /// @dev Gap left by _alignDestinationPrice, which stands for the DAO arbitraging the Frontier pool before opening.
-    uint256 constant ALIGN_TOLERANCE = 0.001e18;
+    /// @dev Slippage on the alignment swap of the DAO batch (the script default).
+    uint256 constant BATCH_SLIPPAGE_BPS = 100;
 
     sPRL2V2 from;
     sPRL2V3 to;
@@ -68,6 +38,10 @@ abstract contract ManualMigration_Fork_Test is Test {
     address dao;
     address[] holders;
     uint256 initialPenalty;
+    AlignFrontierAndSunset script;
+    AlignFrontierAndSunset.Config batchConfig;
+    /// @dev State right before the DAO batch runs.
+    uint256 beforeBatch;
 
     function _fork() internal virtual;
     function _config()
@@ -100,14 +74,49 @@ abstract contract ManualMigration_Fork_Test is Test {
                 permit2: IPermit2(PERMIT2)
             })
         );
-        /// @dev The live Frontier pools are not at the Balancer price yet (25% off on mainnet at this block).
-        _alignDestinationPrice();
+        /// @dev The live Frontier pools are not at the Balancer price yet (25% off on mainnet at this block). The Base
+        /// Safe holds no PRL at this block, so fund both Safes for the alignment swap.
+        script = new AlignFrontierAndSunset();
+        batchConfig = AlignFrontierAndSunset.Config({ source: from, frontierPool: frontierPool, dao: dao });
+        deal(address(prl), dao, prl.balanceOf(dao) + 1_000_000e18);
+        deal(address(weth), dao, weth.balanceOf(dao) + 1000e18);
+        beforeBatch = vm.snapshotState();
 
-        /// @dev Same calls as sprl2v2-sunset.<network>.safe.json, sent by the DAO Safe straight to sPRL2V2.
-        vm.startPrank(dao);
-        from.updateStartPenaltyPercentage(0);
-        from.pause();
-        vm.stopPrank();
+        this.executeBatch(script.build(batchConfig, BATCH_SLIPPAGE_BPS, block.timestamp + 1 days));
+        assertLe(script.priceDeviation(batchConfig), script.TARGET_DEVIATION());
+        assertTrue(from.paused());
+        assertEq(from.startPenaltyPercentage(), 0);
+    }
+
+    /// @dev Runs the batch from the DAO Safe. External so that a revert undoes the whole batch, as the Safe MultiSend
+    /// does.
+    function executeBatch(AlignFrontierAndSunset.Transaction[] memory _txs) external {
+        for (uint256 i; i < _txs.length; ++i) {
+            vm.prank(dao);
+            (bool success, bytes memory result) = _txs[i].to.call(_txs[i].data);
+            if (!success) {
+                assembly {
+                    revert(add(result, 32), mload(result))
+                }
+            }
+        }
+    }
+
+    /// @dev The batch is atomic: if the Frontier price moves before the Safe executes it, the alignment swap misses
+    /// its minAmountOut and the sunset does not happen either.
+    function test_fork_ManualMigration_RevertWhen_FrontierPriceMovedBeforeBatch() external {
+        vm.revertToState(beforeBatch);
+        AlignFrontierAndSunset.Transaction[] memory txs =
+            script.build(batchConfig, BATCH_SLIPPAGE_BPS, block.timestamp + 1 days);
+
+        /// @dev Someone sells 1% of the Frontier PRL balance first: the alignment swap now returns about 5% less WETH.
+        (uint256 toPrl,) = _poolBalances(address(to.BPT()));
+        _swap(makeAddr("front runner"), prl, weth, toPrl / 100);
+
+        vm.expectPartialRevert(IFrontierVaultErrors.SwapLimit.selector);
+        this.executeBatch(txs);
+        assertFalse(from.paused());
+        assertEq(from.startPenaltyPercentage(), initialPenalty);
     }
 
     function test_fork_ManualMigration_AllHolders() external {
@@ -137,6 +146,19 @@ abstract contract ManualMigration_Fork_Test is Test {
         assertEq(from.BPT().balanceOf(from.feeReceiver()), feeReceiverBpt, "no penalty taken");
         assertEq(to.totalSupply(), totalShares);
         assertEq(to.BPT().balanceOf(address(to)), totalShares);
+    }
+
+    /// @dev Once the sunset is done, the same script builds an alignment-only batch to realign the pool mid-migration.
+    function test_fork_ManualMigration_RealignAfterSunset() external {
+        (uint256 toPrl,) = _poolBalances(address(to.BPT()));
+        _swap(makeAddr("seller"), prl, weth, toPrl * 2 / 100);
+        assertGt(script.priceDeviation(batchConfig), script.MAX_DEVIATION());
+
+        AlignFrontierAndSunset.Transaction[] memory txs =
+            script.build(batchConfig, BATCH_SLIPPAGE_BPS, block.timestamp + 1 days);
+        assertEq(txs.length, 3, "approve, Permit2 approve, swap");
+        this.executeBatch(txs);
+        assertLe(script.priceDeviation(batchConfig), script.TARGET_DEVIATION());
     }
 
     function test_fork_ManualMigration_PendingRequestWithoutFee() external {
@@ -259,7 +281,8 @@ abstract contract ManualMigration_Fork_Test is Test {
     }
 
     function _poolBalances(address _pool) internal view returns (uint256 prlBalance, uint256 wethBalance) {
-        (IERC20[] memory tokens,, uint256[] memory balances,) = IPoolLike(_pool).getVault().getPoolTokenInfo(_pool);
+        (IERC20[] memory tokens,, uint256[] memory balances,) =
+            IBalancerV3Pool(_pool).getVault().getPoolTokenInfo(_pool);
         (prlBalance, wethBalance) = tokens[0] == prl ? (balances[0], balances[1]) : (balances[1], balances[0]);
     }
 
@@ -269,48 +292,15 @@ abstract contract ManualMigration_Fork_Test is Test {
         return Math.mulDiv(fromWeth, 4e18, fromPrl);
     }
 
-    /// @dev Gap between the Frontier and Balancer PRL prices (1e18 = 100%). Both pools are 80/20, so the balance
-    /// ratios compare directly. This is the check the frontend runs before letting a user deposit.
-    function _priceDeviation() internal view returns (uint256) {
-        (uint256 fromPrl, uint256 fromWeth) = _poolBalances(address(from.BPT()));
-        (uint256 toPrl, uint256 toWeth) = _poolBalances(address(to.BPT()));
-        uint256 toPrice = toWeth * fromPrl;
-        uint256 fromPrice = fromWeth * toPrl;
-        uint256 gap = toPrice > fromPrice ? toPrice - fromPrice : fromPrice - toPrice;
-        return Math.mulDiv(gap, 1e18, fromPrice);
-    }
-
     function _swap(address _who, IERC20 _tokenIn, IERC20 _tokenOut, uint256 _amountIn) internal returns (uint256) {
         deal(address(_tokenIn), _who, _amountIn);
         vm.startPrank(_who);
         _tokenIn.approve(PERMIT2, type(uint256).max);
         IPermit2(PERMIT2).approve(address(_tokenIn), FRONTIER_ROUTER, type(uint160).max, type(uint48).max);
-        uint256 amountOut = IFrontierRouterSwap(FRONTIER_ROUTER)
+        uint256 amountOut = IBalancerV3SwapRouter(FRONTIER_ROUTER)
             .swapSingleTokenExactIn(address(to.BPT()), _tokenIn, _tokenOut, _amountIn, 0, block.timestamp, false, "");
         vm.stopPrank();
         return amountOut;
-    }
-
-    /// @dev Arbitrage the Frontier pool until its PRL price is within ALIGN_TOLERANCE of the Balancer price. For an
-    /// 80/20 pool, selling a fraction f of the PRL balance divides the price by (1 + f)^5, and selling a fraction g of
-    /// the WETH balance multiplies it by (1 + g)^1.25. Each step uses the first order, capped under the max in ratio.
-    function _alignDestinationPrice() internal {
-        address arbitrageur = makeAddr("arbitrageur");
-        for (uint256 i; i < 64; ++i) {
-            (uint256 fromPrl, uint256 fromWeth) = _poolBalances(address(from.BPT()));
-            (uint256 toPrl, uint256 toWeth) = _poolBalances(address(to.BPT()));
-            /// @dev Frontier PRL price relative to the Balancer one (1e18 = equal).
-            uint256 ratio = Math.mulDiv(toWeth * fromPrl, 1e18, fromWeth * toPrl);
-            if (ratio > 1e18 - ALIGN_TOLERANCE / 2 && ratio < 1e18 + ALIGN_TOLERANCE / 2) break;
-            if (ratio > 1e18) {
-                uint256 f = Math.min((ratio - 1e18) / 5, 0.25e18);
-                _swap(arbitrageur, prl, weth, Math.mulDiv(toPrl, f, 1e18));
-            } else {
-                uint256 g = Math.min((Math.mulDiv(1e18, 1e18, ratio) - 1e18) * 4 / 5, 0.25e18);
-                _swap(arbitrageur, weth, prl, Math.mulDiv(toWeth, g, 1e18));
-            }
-        }
-        assertLe(_priceDeviation(), ALIGN_TOLERANCE);
     }
 }
 

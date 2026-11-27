@@ -5,6 +5,8 @@ auto_detect_solc = false
 block_timestamp = 1_680_220_800 # March 31, 2023 at 00:00 GMT
 bytecode_hash = "none"
 evm_version = "cancun"
+# AlignFrontierAndSunset writes its Safe batch to batches/
+fs_permissions = [{ access = "read-write", path = "./batches" }]
 gas_reports = ["*"]
 optimizer = true
 optimizer_runs = 10_000
