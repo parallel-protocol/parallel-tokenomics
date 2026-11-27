@@ -7,7 +7,7 @@ import { sPRL2 } from "contracts/sPRL/sPRL2.sol";
 import { TimeLockPenaltyERC20 } from "contracts/sPRL/TimeLockPenaltyERC20.sol";
 
 contract SetSPRL2Role is BaseScript {
-    address sprl2 = 0x90337e484B1Cb02132fc150d3Afa262147348545;
+    address sprl2 = 0xE8A2d848fE656E34A6caA35f375B42979e322135;
 
     function run() public broadcast {
         bytes4[] memory guardianSelectors = new bytes4[](2);
