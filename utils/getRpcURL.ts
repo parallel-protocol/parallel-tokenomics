@@ -26,6 +26,12 @@ export const getRpcURL = (network: string): string => {
     case "sonic": {
       return `https://sonic-mainnet.g.alchemy.com/v2/${apiKey}`;
     }
+    case "avalanche": {
+      return `https://avax-mainnet.g.alchemy.com/v2/${apiKey}`;
+    }
+    case "hyperevm": {
+      return `https://rpc.hyperliquid.xyz/evm`;
+    }
     default: {
       throw new Error(`${network} Network RPC not configured`);
     }

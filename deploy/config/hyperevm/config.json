@@ -1,0 +1,16 @@
+{
+  "isMainChainFeeDistributor": false,
+  "accessManager": "0xfD28f108e95f4D41daAE9dbfFf707D677985998E",
+  "wallets": {
+    "dao": "0xC5201FFE258a95Af986E7cD1fcaD54f3f63f2C95"
+  },
+  "tokens": {
+    "usdp": "0xBE65F0F410A72BeC163dC65d46c83699e957D588"
+  },
+  "feeDistributor": {
+    "mainChain": "base",
+    "destinationReceiver": "0x5D49C8b8cc691533742602d6aB3127904959B7e3",
+    "feeToken": "usdp",
+    "bridgeableToken": "0xC3BEF21Ea7dEB5C34CF33E918c8e28972C8048eD"
+  }
+}

@@ -64,6 +64,16 @@ const config: HardhatUserConfig = {
       url: getRpcURL("sonic"),
       accounts,
     },
+    avalanche: {
+      type: "http",
+      url: getRpcURL("avalanche"),
+      accounts,
+    },
+    hyperevm: {
+      type: "http",
+      url: getRpcURL("hyperevm"),
+      accounts,
+    },
   },
 };
 
